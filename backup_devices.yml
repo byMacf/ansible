@@ -26,6 +26,6 @@
       junos_config:
         backup: yes
         backup_options: 
-	  filename: "{{ backup_dir }}{{ inventory_hostname }}_{{ lookup('pipe','date +%Y-%m-%d') }}.cfg"
+          filename: "{{ backup_dir }}{{ inventory_hostname }}_{{ lookup('pipe','date +%Y-%m-%d') }}.cfg"
       when: ansible_network_os == 'junos'
 
