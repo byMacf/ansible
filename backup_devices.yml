@@ -1,0 +1,23 @@
+---
+- name: Backup Lab Devices
+  hosts: homelab
+  gather_facts: no
+  vars:
+    backup_dir: "/home/dom/device_backups/{{ inventory_hostname }}/"
+  tasks:
+    - name: Ensure backup directory exists
+      file:
+        path: "{{ backup_dir }}"
+        state: directory
+        mode: 0755
+
+    - name: Backup Cisco running-config
+      ios_config:
+        backup: yes
+      when: ansible_network_os == 'ios'
+
+    - name: Backup Juniper config
+      junos_config:
+        backup: yes
+        dest: "{{ backup_dir }}{{ inventory_hostname }}_{{ ansible_date_time.date }}.cfg"
+      when: ansible_network_os == 'junos'
