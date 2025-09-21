@@ -19,12 +19,12 @@
       ios_config:
         backup: yes
         backup_options:
-          filename: "{{ backup_dir }}{{ inventory_hostname }}_{{ ansible_date_time.date }}.cfg"
+          filename: "{{ backup_dir }}{{ inventory_hostname }}_{{ lookup('pipe','date +%Y-%m-%d') }}.cfg"
       when: ansible_network_os == 'ios'
 
     - name: Backup Juniper config
       junos_config:
         backup: yes
-        dest: "{{ backup_dir }}{{ inventory_hostname }}_{{ ansible_date_time.date }}.cfg"
+        dest: "{{ backup_dir }}{{ inventory_hostname }}_{{ lookup('pipe','date +%Y-%m-%d') }}.cfg"
       when: ansible_network_os == 'junos'
 
