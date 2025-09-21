@@ -25,6 +25,7 @@
     - name: Backup Juniper config
       junos_config:
         backup: yes
-        dest: "{{ backup_dir }}{{ inventory_hostname }}_{{ lookup('pipe','date +%Y-%m-%d') }}.cfg"
+        backup_options: 
+	  filename: "{{ backup_dir }}{{ inventory_hostname }}_{{ lookup('pipe','date +%Y-%m-%d') }}.cfg"
       when: ansible_network_os == 'junos'
 
