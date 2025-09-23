@@ -15,11 +15,11 @@
         state: directory
         mode: '0755'
 
+    # --- Cisco ---
     - name: Save Cisco running config to startup config
-      ios_config:
-        lines:
-          - copy running-config startup-config
-        save_when: never
+      ios_command:
+        commands:
+          - write memory
       when: ansible_network_os == 'ios'
 
     - name: Backup Cisco running-config
@@ -29,6 +29,7 @@
           filename: "{{ backup_dir }}{{ inventory_hostname }}_{{ lookup('pipe','date +%Y-%m-%d') }}.cfg"
       when: ansible_network_os == 'ios'
 
+    # --- Juniper ---
     - name: Backup Juniper config
       junos_config:
         backup: yes
