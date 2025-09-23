@@ -15,6 +15,13 @@
         state: directory
         mode: '0755'
 
+    - name: Save Cisco running config to startup config
+      ios_config:
+        lines:
+          - copy running-config startup-config
+        save_when: never
+      when: ansible_network_os == 'ios'
+
     - name: Backup Cisco running-config
       ios_config:
         backup: yes
