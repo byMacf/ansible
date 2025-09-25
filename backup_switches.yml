@@ -1,13 +1,11 @@
 ---
-- name: Backup Lab Devices
-  hosts: homelab
+- name: Backup Switch and Router Configurations
+  hosts: switches
   gather_facts: no
-  connection: network_cli
   vars:
     backup_dir: "/data/device_backups/{{ inventory_hostname }}/"
 
   tasks:
-
     - name: Ensure backup directory exists
       delegate_to: localhost
       file:
@@ -15,7 +13,7 @@
         state: directory
         mode: '0755'
 
-    # --- Cisco ---
+    # Cisco IOS
     - name: Save Cisco running config to startup config
       ios_command:
         commands:
@@ -29,7 +27,7 @@
           filename: "{{ backup_dir }}{{ inventory_hostname }}_{{ lookup('pipe','date +%Y-%m-%d') }}.cfg"
       when: ansible_network_os == 'ios'
 
-    # --- Juniper ---
+    # Juniper JunOS
     - name: Backup Juniper config
       junos_config:
         backup: yes

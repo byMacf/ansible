@@ -1,0 +1,33 @@
+---
+- name: Backup FRR Configurations
+  hosts: frr
+  gather_facts: no
+  vars:
+    backup_dir: "/data/device_backups/{{ inventory_hostname }}/"
+    date: "{{ lookup('pipe', 'date +%Y-%m-%d') }}"
+
+  tasks:
+    - name: Ensure backup directory exists on control host
+      delegate_to: localhost
+      file:
+        path: "{{ backup_dir }}"
+        state: directory
+        mode: '0755'
+
+    - name: Backup FRR static config file
+      fetch:
+        src: /etc/frr/frr.conf
+        dest: "{{ backup_dir }}{{ inventory_hostname }}_{{ date }}.cfg"
+        flat: yes
+
+    - name: Dump FRR running config (via vtysh)
+      command: vtysh -c "show running-config"
+      register: frr_running
+
+    - name: Save running config to backup file
+      copy:
+        content: "{{ frr_running.stdout }}"
+        dest: "{{ backup_dir }}{{ inventory_hostname }}_{{ date }}_running.cfg"
+      delegate_to: localhost
+      when: frr_running.stdout is defined and frr_running.stdout | length > 0
+
