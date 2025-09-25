@@ -19,10 +19,7 @@
         src: /etc/frr/frr.conf
         dest: "{{ backup_dir }}{{ inventory_hostname }}_{{ date }}.cfg"
         flat: yes
-
-    - name: Dump FRR running config (via vtysh)
-      command: vtysh -c "show running-config"
-      register: frr_running
+      become: yes
 
     - name: Save running config to backup file
       copy:
