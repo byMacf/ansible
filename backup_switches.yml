@@ -28,6 +28,12 @@
       when: ansible_network_os == 'ios'
 
     # Juniper JunOS
+    - name: Save Junos rescue config
+      junos_config:
+        commands:
+          - request system configuration rescue save
+      when: ansible_network_os == 'junos'
+
     - name: Backup Juniper config
       junos_config:
         backup: yes
