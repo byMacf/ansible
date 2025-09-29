@@ -32,11 +32,13 @@
         commands:
           - show configuration | display set
       register: ex2200_cfg
+      when: inventory_hostname == 'LAB-EX2200'
 
     - copy:
         content: "{{ ex2200_cfg.stdout[0] }}"
         dest: "{{ backup_dir }}{{ inventory_hostname }}_{{ lookup('pipe','date +%Y-%m-%d') }}.cfg"
       delegate_to: localhost
+      when: inventory_hostname == 'LAB-EX2200'
 
     # Juniper JunOS
     - name: Save Juniper rescue config
