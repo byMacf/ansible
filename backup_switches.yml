@@ -27,25 +27,27 @@
           filename: "{{ backup_dir }}{{ inventory_hostname }}_{{ lookup('pipe','date +%Y-%m-%d') }}.cfg"
       when: ansible_network_os == 'ios'
 
-    - name: Backup EX2200 config via CLI
-      junos_command:
-        commands:
-          - show configuration | display set
-      register: ex2200_cfg
-      when: inventory_hostname == 'LAB-EX2200'
-
-    - copy:
-        content: "{{ ex2200_cfg.stdout[0] }}"
-        dest: "{{ backup_dir }}{{ inventory_hostname }}_{{ lookup('pipe','date +%Y-%m-%d') }}.cfg"
-      delegate_to: localhost
-      when: inventory_hostname == 'LAB-EX2200'
-
     # Juniper JunOS
     - name: Save Juniper rescue config
       junos_command:
         commands:
           - request system configuration rescue save
       when: ansible_network_os == 'junos'
+
+    - name: Fetch EX2200 config via CLI
+      junos_command:
+        commands:
+          - show configuration | display set
+        display: text
+      register: ex2200_cfg
+      when: inventory_hostname == 'LAB-EX2200'
+
+    - name: Backup EX2200 config
+      copy:
+        content: "{{ ex2200_cfg.stdout[0] }}"
+        dest: "{{ backup_dir }}{{ inventory_hostname }}_{{ lookup('pipe','date +%Y-%m-%d') }}.cfg"
+      delegate_to: localhost
+      when: inventory_hostname == 'LAB-EX2200'
 
     - name: Backup Juniper config
       junos_config:
