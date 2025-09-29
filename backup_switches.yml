@@ -38,7 +38,6 @@
       junos_command:
         commands:
           - show configuration | display set
-        display: text
       register: ex2200_cfg
       when: inventory_hostname == 'LAB-EX2200'
 
