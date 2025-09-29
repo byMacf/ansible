@@ -14,6 +14,9 @@
         state: directory
         mode: '0755'
 
+    - name: Save FRR running config to startup config
+      command: sudo vtysh -c "write memory"
+
     - name: Dump FRR running config (via vtysh)
       command: sudo vtysh -c "show running-config"
       register: frr_running
